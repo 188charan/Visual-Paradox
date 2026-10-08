@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #050505;
+    --foreground: #f4f1ea;
+  }
+
+  * {
+    @apply border-ink-500;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-ink-900 font-sans text-bone antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Warm, restrained selection colour (champagne, never blue). */
+  ::selection {
+    background: #c9bba0;
+    color: #050505;
+  }
+
+  /* Focus visibility for keyboard users. */
+  :focus-visible {
+    outline: 1px solid #c9bba0;
+    outline-offset: 2px;
+  }
+
+  /* Subtle custom scrollbar on supported browsers. */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #050505;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1c1c1c;
+    border: 2px solid #050505;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2a2a2a;
+  }
+}
+
+@layer utilities {
+  /* Fine grain/noise can be layered later; placeholder hook. */
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Respect reduced-motion globally. Phase 3 motion also checks this at the JS
+   level; this is the baseline safety net. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

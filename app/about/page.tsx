@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Container } from '@/components/ui';
 import { ImageReveal, TextReveal, FadeUp } from '@/components/animations';
-import { demoImageUrl } from '@/lib/data';
+import { demoImageUrl } from '@/lib/data/images';
 import { siteConfig } from '@/lib/config';
 
 export const metadata: Metadata = {

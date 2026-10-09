@@ -1,4 +1,6 @@
 import type { Category, ContentSource, Project } from '@/types';
+import { isSanityConfigured } from '@/lib/sanity/env';
+import { sanitySource } from '@/lib/sanity/source';
 import { demoCategories } from './categories';
 import { demoProjects } from './projects';
 
@@ -40,19 +42,18 @@ const demoSource: ContentSource = {
 const sourceName = process.env.NEXT_PUBLIC_CONTENT_SOURCE ?? 'demo';
 
 /**
- * Resolve the active content source. Falls back to demo until the Sanity
- * implementation lands in Phase 5.
+ * Resolve the active content source.
+ * - `sanity` + a configured project → the Sanity-backed source (which itself
+ *   degrades to demo content on any query error).
+ * - otherwise → the local demo source.
+ * This is the ONLY place that knows which backend answers; components always
+ * import `content` and stay decoupled.
  */
 function resolveSource(): ContentSource {
-  switch (sourceName) {
-    case 'sanity':
-      // Phase 5: return the Sanity-backed ContentSource here.
-      // Falling through to demo keeps the app running until then.
-      return demoSource;
-    case 'demo':
-    default:
-      return demoSource;
+  if (sourceName === 'sanity' && isSanityConfigured) {
+    return sanitySource;
   }
+  return demoSource;
 }
 
 export const content: ContentSource = resolveSource();

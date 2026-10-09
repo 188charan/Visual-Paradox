@@ -8,7 +8,7 @@ import { Magnetic, gsap, useGSAP, EASE } from '@/components/animations';
 import { HeroLens } from '@/components/three';
 import { usePrefersReducedMotion } from '@/hooks';
 import { siteConfig } from '@/lib/config';
-import { demoImageUrl } from '@/lib/data';
+import { demoImageUrl } from '@/lib/data/images';
 
 const WORDS = ['THE', 'VISUAL', 'PARADOX'] as const;
 

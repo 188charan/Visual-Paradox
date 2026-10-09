@@ -8,6 +8,7 @@ import { siteConfig } from '@/lib/config';
 export const metadata: Metadata = {
   title: 'Work',
   description: `The visual archive of ${siteConfig.name} — cinematic photography across weddings, portraits, fashion, and brands.`,
+  alternates: { canonical: '/work' },
 };
 
 /**

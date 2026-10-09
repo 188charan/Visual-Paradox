@@ -36,6 +36,10 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
     gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
 
+    // Recalculate trigger positions once late-loading images settle layout.
+    const onLoad = () => ScrollTrigger.refresh();
+    window.addEventListener('load', onLoad);
+
     // Smooth in-page anchor navigation (keeps hrefs like /#experience working).
     const onAnchorClick = (e: MouseEvent) => {
       const target = (e.target as HTMLElement)?.closest('a');
@@ -53,6 +57,7 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
 
     return () => {
       document.removeEventListener('click', onAnchorClick);
+      window.removeEventListener('load', onLoad);
       gsap.ticker.remove(raf);
       lenis.destroy();
     };

@@ -23,8 +23,21 @@ export function Lightbox({ images, index, onClose, onNavigate }: LightboxProps) 
   const open = index !== null;
   const touchStartX = useRef<number | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const openedFrom = useRef<HTMLElement | null>(null);
 
   useLockBodyScroll(open);
+
+  // Capture the triggering element on open; restore focus to it on close.
+  useEffect(() => {
+    if (open) {
+      openedFrom.current = (document.activeElement as HTMLElement) ?? null;
+      // Focus the dialog on the next frame so it's mounted/visible.
+      requestAnimationFrame(() => panelRef.current?.focus());
+    } else if (openedFrom.current) {
+      openedFrom.current.focus();
+      openedFrom.current = null;
+    }
+  }, [open]);
 
   const go = useCallback(
     (dir: 1 | -1) => {
@@ -38,12 +51,31 @@ export function Lightbox({ images, index, onClose, onNavigate }: LightboxProps) 
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
       if (e.key === 'ArrowRight') go(1);
       if (e.key === 'ArrowLeft') go(-1);
+      // Trap focus inside the dialog while open.
+      if (e.key === 'Tab' && panelRef.current) {
+        const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], [tabindex]:not([tabindex="-1"])',
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const activeEl = document.activeElement;
+        if (e.shiftKey && activeEl === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && activeEl === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     window.addEventListener('keydown', onKey);
-    panelRef.current?.focus();
     return () => window.removeEventListener('keydown', onKey);
   }, [open, onClose, go]);
 

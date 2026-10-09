@@ -28,7 +28,13 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   return {
     title: project.seoTitle ?? project.title,
     description: project.seoDescription ?? project.description,
-    openGraph: { images: [{ url: project.coverImage.src }] },
+    alternates: { canonical: `/work/${project.category}/${project.slug}` },
+    openGraph: {
+      title: project.title,
+      description: project.seoDescription ?? project.description,
+      images: project.coverImage.src ? [{ url: project.coverImage.src }] : undefined,
+      type: 'article',
+    },
   };
 }
 

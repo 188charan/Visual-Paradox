@@ -30,6 +30,8 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   return {
     title: category.seoTitle ?? category.name,
     description: category.seoDescription ?? category.description,
+    alternates: { canonical: `/work/${category.slug}` },
+    openGraph: category.heroImage.src ? { images: [{ url: category.heroImage.src }] } : undefined,
   };
 }
 

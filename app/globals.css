@@ -13,7 +13,9 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    /* No native smooth scroll — Lenis owns smoothing when motion is allowed,
+       and the reduced-motion block below forces instant. Having both fights
+       anchor jumps. */
     -webkit-text-size-adjust: 100%;
   }
 

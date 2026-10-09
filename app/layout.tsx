@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Inter } from 'next/font/google';
 import { Navbar } from '@/components/navigation';
 import { Footer } from '@/components/sections';
 import { AppProviders } from '@/components/providers';
+import { StructuredData } from '@/components/seo/StructuredData';
 import { siteConfig } from '@/lib/config';
 import './globals.css';
 
@@ -28,6 +29,7 @@ export const metadata: Metadata = {
     template: `%s — ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  alternates: { canonical: '/' },
   openGraph: {
     title: siteConfig.name,
     description: siteConfig.description,
@@ -60,6 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
+        <StructuredData />
         <AppProviders>
           <Navbar />
           <main id="main">{children}</main>

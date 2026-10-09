@@ -7,6 +7,7 @@ import { siteConfig } from '@/lib/config';
 export const metadata: Metadata = {
   title: 'Studio',
   description: `Inside the ${siteConfig.name} studio in ${siteConfig.location.area}, ${siteConfig.location.city}.`,
+  alternates: { canonical: '/studio' },
 };
 
 /**

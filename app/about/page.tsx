@@ -7,6 +7,7 @@ import { siteConfig } from '@/lib/config';
 export const metadata: Metadata = {
   title: 'About',
   description: `About ${siteConfig.name} — a photography studio in ${siteConfig.location.city}.`,
+  alternates: { canonical: '/about' },
 };
 
 /**

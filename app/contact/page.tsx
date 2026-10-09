@@ -9,6 +9,7 @@ import { siteConfig } from '@/lib/config';
 export const metadata: Metadata = {
   title: 'Contact',
   description: `Enquire and book a shoot with ${siteConfig.name}, ${siteConfig.location.city}.`,
+  alternates: { canonical: '/contact' },
 };
 
 /**

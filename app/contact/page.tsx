@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { ArrowUpRight } from 'lucide-react';
 import { Container } from '@/components/ui';
 import { TextReveal, FadeUp } from '@/components/animations';
+import { BookingForm } from '@/components/contact';
+import { content } from '@/lib/data';
 import { siteConfig } from '@/lib/config';
 
 export const metadata: Metadata = {
@@ -10,11 +12,14 @@ export const metadata: Metadata = {
 };
 
 /**
- * /contact — the conversion page. For this phase it's a polished editorial
- * placeholder with real reach-out methods (all config-driven placeholders). The
- * full validated booking form arrives in Phase 6.
+ * /contact — the conversion page. Cinematic headline + a validated booking form
+ * (data-driven photography types) + direct reach methods. All contact values
+ * are config-driven placeholders — no fabricated business facts.
  */
-export default function ContactPage() {
+export default async function ContactPage() {
+  const categories = await content.getCategories();
+  const photographyTypes = [...categories.map((c) => c.name), 'Other'];
+
   const methods = [
     { label: 'Email', value: siteConfig.contact.email, href: `mailto:${siteConfig.contact.email}` },
     { label: 'WhatsApp', value: 'Message the studio', href: siteConfig.contact.whatsappUrl },
@@ -42,15 +47,15 @@ export default function ContactPage() {
           />
         </h1>
 
-        <div className="mt-16 grid gap-12 lg:grid-cols-12">
+        <div className="mt-16 grid gap-16 lg:grid-cols-12">
+          {/* Form */}
           <div className="lg:col-span-7">
-            <p className="max-w-md font-sans text-base leading-relaxed text-ash">
-              Tell us about the shoot — the people, the moment, the brand. The full booking form is
-              on its way; for now, reach the studio directly.
-            </p>
+            <BookingForm photographyTypes={photographyTypes} />
           </div>
 
+          {/* Direct reach */}
           <div className="flex flex-col gap-6 lg:col-span-4 lg:col-start-9">
+            <p className="font-sans text-[11px] uppercase tracking-meta text-ash">Or reach us directly</p>
             {methods.map((m) => (
               <FadeUp key={m.label}>
                 <a

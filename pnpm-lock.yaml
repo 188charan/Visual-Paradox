@@ -202,6 +202,9 @@ importers:
       three:
         specifier: ^0.186.1
         version: 0.186.1
+      zod:
+        specifier: ^4.6.5
+        version: 4.6.5
     devDependencies:
       '@sanity/vision':
         specifier: ^6.18.0

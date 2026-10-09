@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import { track } from '@vercel/analytics';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui';
 import { Magnetic } from '@/components/animations';
@@ -50,6 +51,8 @@ export function BookingForm({ photographyTypes }: { photographyTypes: string[] }
     startTransition(async () => {
       const result = await submitBooking(parsed.data);
       if (result.status === 'success') {
+        // Useful, non-invasive conversion signal (no PII sent).
+        track('booking_submitted', { photographyType: parsed.data.photographyType });
         setStatus('success');
         setValues(EMPTY);
       } else {

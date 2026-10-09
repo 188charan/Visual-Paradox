@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Cormorant_Garamond, Inter } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import { Navbar } from '@/components/navigation';
 import { Footer } from '@/components/sections';
 import { AppProviders } from '@/components/providers';
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main id="main">{children}</main>
           <Footer />
         </AppProviders>
+        <Analytics />
       </body>
     </html>
   );

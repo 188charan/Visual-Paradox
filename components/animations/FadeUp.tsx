@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, type ElementType, type ReactNode } from 'react';
+import { createElement, useRef, type ElementType, type ReactNode } from 'react';
 import { usePrefersReducedMotion } from '@/hooks';
 import { gsap, useGSAP, EASE } from './gsap';
 
@@ -50,9 +50,7 @@ export function FadeUp({
     { scope: ref, dependencies: [reduced] },
   );
 
-  return (
-    <Tag ref={ref} className={className}>
-      {children}
-    </Tag>
-  );
+  // createElement avoids polymorphic JSX children inference (which collapses to
+  // `never` once react-three-fiber augments the global JSX namespace).
+  return createElement(Tag, { ref, className }, children);
 }

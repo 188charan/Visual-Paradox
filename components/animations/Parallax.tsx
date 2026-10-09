@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, type ElementType, type ReactNode } from 'react';
+import { createElement, useRef, type ElementType, type ReactNode } from 'react';
 import { usePrefersReducedMotion } from '@/hooks';
 import { gsap, useGSAP } from './gsap';
 
@@ -41,9 +41,5 @@ export function Parallax({ children, as: Tag = 'div', className, amount = 80 }: 
     { scope: ref, dependencies: [reduced] },
   );
 
-  return (
-    <Tag ref={ref} className={className}>
-      {children}
-    </Tag>
-  );
+  return createElement(Tag, { ref, className }, children);
 }

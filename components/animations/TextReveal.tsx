@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, type ElementType } from 'react';
+import { createElement, useRef, type ElementType } from 'react';
 import { usePrefersReducedMotion } from '@/hooks';
 import { gsap, useGSAP, EASE } from './gsap';
 
@@ -57,8 +57,12 @@ export function TextReveal({
     { scope: ref, dependencies: [reduced] },
   );
 
-  return (
-    <Tag ref={ref} className={className}>
+  // createElement avoids polymorphic JSX children inference (collapses to
+  // `never` once react-three-fiber augments the global JSX namespace).
+  return createElement(
+    Tag,
+    { ref, className },
+    <>
       {words.map((word, i) => (
         <span
           key={`${word}-${i}`}
@@ -73,6 +77,6 @@ export function TextReveal({
       ))}
       {/* Accessible, unanimated copy for screen readers / reduced motion. */}
       {!reduced && <span className="sr-only">{text}</span>}
-    </Tag>
+    </>,
   );
 }

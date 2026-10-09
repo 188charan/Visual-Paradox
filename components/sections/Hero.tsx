@@ -5,6 +5,7 @@ import { useRef } from 'react';
 import { ArrowDownRight } from 'lucide-react';
 import { ButtonLink } from '@/components/ui';
 import { Magnetic, gsap, useGSAP, EASE } from '@/components/animations';
+import { HeroLens } from '@/components/three';
 import { usePrefersReducedMotion } from '@/hooks';
 import { siteConfig } from '@/lib/config';
 import { demoImageUrl } from '@/lib/data';
@@ -102,7 +103,9 @@ export function Hero() {
         <div className="absolute inset-0 bg-ink-900/20" />
       </div>
 
-      {/* PHASE 4 MOUNT POINT — 3D optical/lens element mounts here later. */}
+      {/* Signature 3D optical lens — self-guards (desktop + WebGL + motion),
+          lazy-loaded, graceful fallback to the photograph below. */}
+      <HeroLens />
 
       <div
         data-hero-content

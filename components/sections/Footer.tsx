@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Instagram, MessageCircle, Mail } from 'lucide-react';
 import { siteConfig } from '@/lib/config';
+import { FooterWordmark } from './FooterWordmark';
 
 /**
  * Footer — the end of the visual journey. Large wordmark, location, social and
@@ -83,9 +84,7 @@ export function Footer() {
 
         {/* Oversized wordmark */}
         <div className="mt-20 border-t border-ink-500 pt-10">
-          <p className="select-none bg-gradient-to-b from-bone/90 to-bone/30 bg-clip-text text-center font-sans text-[clamp(2.2rem,11vw,11rem)] font-semibold leading-none tracking-tight3 text-transparent">
-            THEVISUALPARADOX
-          </p>
+          <FooterWordmark />
         </div>
 
         <div className="mt-10 flex flex-col items-center justify-between gap-4 sm:flex-row">

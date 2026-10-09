@@ -1,77 +1,151 @@
+'use client';
+
 import Image from 'next/image';
+import { useRef } from 'react';
 import { ArrowDownRight } from 'lucide-react';
 import { ButtonLink } from '@/components/ui';
+import { Magnetic, gsap, useGSAP, EASE } from '@/components/animations';
+import { usePrefersReducedMotion } from '@/hooks';
 import { siteConfig } from '@/lib/config';
 import { demoImageUrl } from '@/lib/data';
 
+const WORDS = ['THE', 'VISUAL', 'PARADOX'] as const;
+
 /**
- * Hero shell (Phase 1).
+ * Cinematic hero.
  *
- * Full-viewport cinematic photograph with the brand name integrated as large
- * editorial typography (THE / VISUAL / PARADOX). Static and premium for now —
- * the scroll-driven motion (Phase 3) and the 3D optical element (Phase 4) will
- * attach at the marked mount points below without restructuring this layout.
+ * On load: the photograph settles from a slight zoom, the three words rise out
+ * of their masks in sequence, and the metadata + CTAs follow. On scroll the
+ * whole section behaves like a transition — the image scales and drifts, the
+ * words move at different speeds (depth), and the content compresses away as
+ * the visitor moves "into" the studio's world. All gated on reduced motion.
  */
 export function Hero() {
+  const root = useRef<HTMLElement>(null);
+  const reduced = usePrefersReducedMotion();
+
+  useGSAP(
+    () => {
+      const scope = root.current;
+      if (!scope) return;
+
+      const image = scope.querySelector('[data-hero-img]');
+      const words = gsap.utils.toArray<HTMLElement>('[data-hero-word-inner]');
+      const meta = scope.querySelectorAll('[data-hero-fade]');
+      const content = scope.querySelector('[data-hero-content]');
+
+      if (reduced) {
+        gsap.set([image, words, meta], { clearProps: 'all' });
+        return;
+      }
+
+      // --- Entrance ---
+      const tl = gsap.timeline({ defaults: { ease: EASE.out } });
+      tl.fromTo(image, { scale: 1.18 }, { scale: 1, duration: 1.8, ease: EASE.cinema });
+      tl.fromTo(
+        words,
+        { yPercent: 115 },
+        { yPercent: 0, duration: 1.1, stagger: 0.12 },
+        0.25,
+      );
+      tl.fromTo(meta, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.12 }, 0.9);
+
+      // --- Scroll transition ---
+      // immediateRender:false so these don't fight the entrance timeline before
+      // any scroll happens.
+      const st = { trigger: scope, start: 'top top', end: 'bottom top', scrub: true };
+      gsap.fromTo(
+        image,
+        { scale: 1, yPercent: 0 },
+        { scale: 1.25, yPercent: 12, ease: 'none', immediateRender: false, scrollTrigger: st },
+      );
+      gsap.fromTo(
+        content,
+        { yPercent: 0, autoAlpha: 1 },
+        { yPercent: -18, autoAlpha: 0, ease: 'none', immediateRender: false, scrollTrigger: st },
+      );
+      // Each word drifts a little differently for layered depth.
+      words.forEach((word, i) => {
+        gsap.fromTo(
+          word,
+          { yPercent: 0 },
+          {
+            yPercent: -40 - i * 22,
+            ease: 'none',
+            immediateRender: false,
+            scrollTrigger: st,
+          },
+        );
+      });
+    },
+    { scope: root, dependencies: [reduced] },
+  );
+
   return (
-    <section className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden bg-ink-900">
+    <section
+      ref={root}
+      className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden bg-ink-900"
+    >
       {/* Cinematic background photograph */}
       <div className="absolute inset-0">
-        <Image
-          src={demoImageUrl('tvp-hero-cinematic', 'landscape')}
-          alt="A cinematic photograph by TheVisualParadox"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center"
-        />
-        {/* Legibility + mood grading */}
+        <div data-hero-img className="relative h-full w-full will-change-transform">
+          <Image
+            src={demoImageUrl('tvp-hero-cinematic', 'landscape')}
+            alt="A cinematic photograph by TheVisualParadox"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-t from-ink-900 via-ink-900/50 to-ink-900/70" />
         <div className="absolute inset-0 bg-ink-900/20" />
       </div>
 
-      {/*
-        PHASE 4 MOUNT POINT — 3D optical / lens element will mount here as an
-        absolutely-positioned, dynamically-imported client component with a 2D
-        fallback. Kept empty in Phase 1.
-      */}
+      {/* PHASE 4 MOUNT POINT — 3D optical/lens element mounts here later. */}
 
-      {/*
-        PHASE 3 MOUNT POINT — scroll-driven parallax + typography reveal will
-        wrap the content block below. The DOM structure here is intentionally
-        stable so GSAP/ScrollTrigger can target it without markup changes.
-      */}
-      <div className="relative z-10 mx-auto w-full max-w-shell px-5 pb-14 pt-28 sm:px-8 sm:pb-20 lg:px-16">
-        {/* Top metadata row */}
+      <div
+        data-hero-content
+        className="relative z-10 mx-auto w-full max-w-shell px-5 pb-14 pt-28 will-change-transform sm:px-8 sm:pb-20 lg:px-16"
+      >
         <div className="mb-auto flex items-start justify-between pb-16">
-          <p className="max-w-xs font-sans text-[11px] uppercase leading-relaxed tracking-meta text-bone/70">
+          <p data-hero-fade className="max-w-xs font-sans text-[11px] uppercase leading-relaxed tracking-meta text-bone/70">
             {siteConfig.tagline}
           </p>
-          <p className="hidden font-sans text-[11px] uppercase tracking-meta text-bone/70 sm:block">
+          <p data-hero-fade className="hidden font-sans text-[11px] uppercase tracking-meta text-bone/70 sm:block">
             {siteConfig.location.short}
           </p>
         </div>
 
-        {/* Display wordmark */}
         <h1 className="font-serif font-light leading-[0.82] tracking-tight3 text-bone">
-          <span className="block text-display">THE</span>
-          <span className="block text-display">VISUAL</span>
-          <span className="block text-display text-champagne/90">PARADOX</span>
+          {WORDS.map((word, i) => (
+            <span key={word} className="block overflow-hidden">
+              <span
+                data-hero-word-inner
+                className={`block text-display will-change-transform ${i === 2 ? 'text-champagne/90' : ''}`}
+              >
+                {word}
+              </span>
+            </span>
+          ))}
         </h1>
 
-        {/* CTA row */}
-        <div className="mt-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <div data-hero-fade className="mt-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-4">
-            <ButtonLink href="/work" variant="solid" size="md">
-              Explore the work
-            </ButtonLink>
-            <ButtonLink href="/contact" variant="outline" size="md">
-              Book a shoot
-            </ButtonLink>
+            <Magnetic>
+              <ButtonLink href="/work" variant="solid" size="md" data-cursor-interactive>
+                Explore the work
+              </ButtonLink>
+            </Magnetic>
+            <Magnetic>
+              <ButtonLink href="/contact" variant="outline" size="md" data-cursor-interactive>
+                Book a shoot
+              </ButtonLink>
+            </Magnetic>
           </div>
           <span className="flex items-center gap-2 font-sans text-[11px] uppercase tracking-meta text-bone/60">
             Scroll to enter the studio
-            <ArrowDownRight className="h-4 w-4 text-champagne" />
+            <ArrowDownRight className="h-4 w-4 animate-pulse text-champagne" />
           </span>
         </div>
       </div>

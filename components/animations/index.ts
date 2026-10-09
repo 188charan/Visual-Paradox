@@ -1,10 +1,7 @@
-/**
- * Animation primitives (Phase 3).
- *
- * Placeholder barrel. Phase 3 adds GSAP/ScrollTrigger + Lenis wrappers here:
- * SmoothScrollProvider, TextReveal, ImageReveal, MagneticButton,
- * PageTransition, SplitText, etc. Kept empty so imports can be introduced
- * without restructuring. Heavy animation modules will be dynamically imported.
- */
-
-export {};
+export { SmoothScrollProvider } from './SmoothScrollProvider';
+export { TextReveal } from './TextReveal';
+export { ImageReveal } from './ImageReveal';
+export { FadeUp } from './FadeUp';
+export { Parallax } from './Parallax';
+export { Magnetic } from './Magnetic';
+export { gsap, ScrollTrigger, useGSAP, EASE, DURATION } from './gsap';

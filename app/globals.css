@@ -58,6 +58,37 @@
   }
 }
 
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes loaderSlide {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+
+/* Hide the native cursor only where the custom cursor runs: fine pointer with
+   hover, and motion allowed. Keyboard focus is unaffected. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html,
+  body,
+  a,
+  button,
+  [data-cursor],
+  [data-cursor-interactive] {
+    cursor: none;
+  }
+}
+
 /* Respect reduced-motion globally. Phase 3 motion also checks this at the JS
    level; this is the baseline safety net. */
 @media (prefers-reduced-motion: reduce) {
